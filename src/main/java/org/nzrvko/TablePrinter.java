@@ -3,18 +3,24 @@ package org.nzrvko;
 import java.util.List;
 
 public class TablePrinter {
-
     public void createTable(List<String> strings, int columnCount) {
         if (columnCount <= 0) throw new IllegalArgumentException("Column count must be greater than 0");
 
         int columnWidth = strings.stream().mapToInt(String::length).max().orElse(0) + 5;
-        int totalCells = ((strings.size() + columnCount - 1) / columnCount) * columnCount;
+        printRow(strings, columnCount, columnWidth, 0);
+    }
 
-        for (int i = 0; i < totalCells; i++) {
-            String cellContent = i < strings.size() ? strings.get(i) : "";
-            System.out.print(padString(cellContent, columnWidth));
-            if ((i + 1) % columnCount == 0) System.out.println();
+    private void printRow(List<String> strings, int columnCount, int columnWidth, int index) {
+        if (index >= strings.size()) {
+            return;
         }
+        System.out.print(padString(strings.get(index), columnWidth));
+
+        if ((index + 1) % columnCount == 0 || index == strings.size() - 1) {
+            System.out.println();
+        }
+
+        printRow(strings, columnCount, columnWidth, index + 1);
     }
 
     private String padString(String s, int width) {
